@@ -8,9 +8,20 @@ parser = argparse.ArgumentParser(
     prog='unpack-hw',
     description='Unpack a student homework archive for grading',
 )
-parser.add_argument("--rust", action="store_true")
-parser.add_argument("--hw", required=True)
-parser.add_argument("filename")
+parser.add_argument(
+    "--rust",
+    help="adjust unpacked directories to move crate to top-level",
+    action="store_true",
+)
+parser.add_argument(
+    "--hw",
+    help="name of the assignment as defined in the CSV gradebook",
+    required=True,
+)
+parser.add_argument(
+    "filename",
+    help="zip archive containing submissions (example: submissions.zip)",
+)
 args = parser.parse_args()
 
 def mkfdir(root):

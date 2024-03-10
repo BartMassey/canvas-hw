@@ -1,11 +1,20 @@
 # canvas-hw: tools for offline homework grading in Canvas LMS
 Bart Massey 2023
 
-These are janky half-finished tools for downloading an
-assignment from Canvas that is presumed to be one ZIP
-file per submission, unpacking that locally, then allowing
-local grading. At the end, the grade results are uploaded to 
-Canvas.
+These are tools for working with Canvas grades.
+
+* `unpack-hw.py`: Download an assignment from Canvas that is
+  presumed to be one ZIP file per submission, unpack that
+  locally for local grading.
+  
+  With the `--rust` flag enabled, Cargo projects in
+  submissions are cleaned up to a more consistent format.
+
+* `upload-grades.py`: Extract the local grades and upload
+  them to Canvas.
+
+* `update-grades.py`: Extract the local grades and update a
+  local CSV gradebook. Not used in a long time — may not work.
 
 Thus is SpeedGrader avoided.
 
@@ -44,6 +53,10 @@ Thus is SpeedGrader avoided.
 * Find course ID in course URL
 * Find assignment ID in assignment URL
 * Run `upload-grades.py <courseid> <asgid>`
+
+Note that the `--test` argument can be used to upload just
+one grade. This is useful to avoid spamming the list if
+something is configured wrong / you are unsure.
 
 ## Acknowledgments
 

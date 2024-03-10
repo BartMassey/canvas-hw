@@ -6,11 +6,31 @@ parser = argparse.ArgumentParser(
     prog='upload-grades',
     description='Upload project grades to Canvas',
 )
-parser.add_argument('--test', action='store_true')
-parser.add_argument('--debug', action='store_true')
-parser.add_argument('--baseurl', default="canvas.pdx.edu")
-parser.add_argument('courseid', nargs='?')
-parser.add_argument('asgid', nargs='?')
+parser.add_argument(
+    '--test',
+    help='upload just a single random grade, to check that things are working',
+    action='store_true',
+)
+parser.add_argument(
+    '--debug',
+    help='just print grading information and exit',
+    action='store_true',
+)
+parser.add_argument(
+    '--baseurl',
+    help="domain name of canvas site [default canvas.pdx.edu]",
+    default="canvas.pdx.edu",
+)
+parser.add_argument(
+    'courseid',
+    help = "Canvas course ID number",
+    nargs='?',
+)
+parser.add_argument(
+    'asgid',
+    help = "Canvas assignment ID number",
+    nargs='?',
+)
 args = parser.parse_args()
 
 grades = dict()
