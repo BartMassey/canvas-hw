@@ -95,6 +95,7 @@ def pull_cargo_up(gpath):
     return True
 
 filename_re = re.compile(r"([a-z]+)_(LATE_)?([0-9]+)_([0-9]+).*$")
+ext_re = re.compile(r".*[.](.*)$")
 project_archive = zipfile.ZipFile(args.filename)
 projects = []
 for zipinfo in project_archive.infolist():
@@ -107,11 +108,15 @@ for zipinfo in project_archive.infolist():
 
     path = mkfdir(sdest / slug)
 
-    zip = project_archive.open(zipinfo)
-    with zipfile.ZipFile(zip) as zip:
-        zip.extractall(path=path)
-    if args.rust:
-        prepare_cargo_project(path)
+    ext = ext_re.search(zipinfo.filename)
+    if ext is None or ext[1].lower() != "pdf":
+        zip = project_archive.open(zipinfo)
+        with zipfile.ZipFile(zip) as zip:
+            zip.extractall(path=path)
+        if args.rust:
+            prepare_cargo_project(path)
+    else:
+        project_archive.extract(zipinfo, path=path)
 
     grading = path / "GRADING.txt"
     with open(grading, "w") as gr:
