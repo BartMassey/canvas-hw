@@ -19,6 +19,11 @@ parser.add_argument(
     required=True,
 )
 parser.add_argument(
+    "--force",
+    help="delete any existing graded/ and staged/ directories",
+    action="store_true",
+)
+parser.add_argument(
     "filename",
     help="zip archive containing submissions (example: submissions.zip)",
 )
@@ -27,8 +32,10 @@ args = parser.parse_args()
 def mkfdir(root):
     fdest = Path(root)
     if fdest.is_dir():
-        print(f"directory {root} exists", file=sys.stderr)
-        exit(1)
+        if not args.force:
+            print(f"directory {root} exists", file=sys.stderr)
+            exit(1)
+        shutil.rmtree(fdest)
     fdest.mkdir(mode=0o700)
     return fdest
 
