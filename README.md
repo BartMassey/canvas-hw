@@ -56,7 +56,10 @@ Thus is SpeedGrader avoided.
 
 Note that the `--test` argument can be used to upload just
 one grade. This is useful to avoid spamming the list if
-something is configured wrong / you are unsure.
+something is configured wrong / you are unsure. Notice also
+that projects will be moved to `uploaded/` after their
+grades are uploaded: in particular the `--test` project
+(which is effectively a random one).
 
 ## Acknowledgments
 

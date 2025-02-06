@@ -24,17 +24,16 @@ parser.add_argument(
 parser.add_argument(
     'courseid',
     help = "Canvas course ID number",
-    nargs='?',
 )
 parser.add_argument(
     'asgid',
     help = "Canvas assignment ID number",
-    nargs='?',
 )
 args = parser.parse_args()
 
 grades = dict()
 comments = dict()
+path = dict()
 projects = list(Path("graded").iterdir())
 for project in projects:
     fids = project / ".canvas_info"
@@ -52,8 +51,13 @@ for project in projects:
     body = "\n".join(sgrading[4:]) + "\n"
     grades[sid] = score
     comments[sid] = body
+    path[sid] = project
 
-assert args.courseid and args.asgid, "need course and assignment ids"
+# assert args.courseid and args.asgid, "need course and assignment ids"
+
+uploaded = Path("uploaded")
+if not uploaded.is_dir():
+    uploaded.mkdir()
 
 grader = canvasgrader.CanvasGrader(
     args.baseurl,
@@ -74,6 +78,8 @@ if args.test:
         grades=grades,
         comments=comments,
     )
+    path = path[sid]
+    path.rename(uploaded / path.name)
     exit(0)
 
 grader.grade_assignment(
@@ -81,3 +87,5 @@ grader.grade_assignment(
     grades=grades,
     comments=comments,
 )
+for p in path.values():
+    p.rename(uploaded / p.name)

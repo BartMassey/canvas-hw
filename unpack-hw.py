@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Unpack Canvas HW for grading.
 # Bart Massey 2023
 
