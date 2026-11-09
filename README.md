@@ -3,9 +3,8 @@ Bart Massey 2023
 
 These are tools for working with Canvas grades.
 
-* `unpack-hw.py`: Download an assignment from Canvas that is
-  presumed to be one ZIP file per submission, unpack that
-  locally for local grading.
+* `unpack-hw.py`: Unpack downloaded Canvas submissions for
+  local grading. Each submission should be a ZIP file or PDF.
   
   With the `--rust` flag enabled, Cargo projects in
   submissions are cleaned up to a more consistent format.
@@ -30,29 +29,59 @@ Thus is SpeedGrader avoided.
   now) and run `pip install .`
 
 
-### Download
+### Get the Student Roster
 
-* Go to `https://canvas.pdx.edu/courses/<course-id>/students` and
-  copy-paste the JSON found there into `students.json`
-  (gross, will fix later)
+Before unpacking submissions, obtain the roster from Canvas:
 
-* Download a zipball of the HW from Canvas.
+1. Sign in to Canvas and open your course. The number in
+   `/courses/<course-id>` in the URL is the course ID.
+2. Open `https://canvas.pdx.edu/courses/<course-id>/students`,
+   replacing `<course-id>` with that number.
+3. Copy the JSON shown there into a file named `students.json`
+   in your local grading directory. Save the JSON itself,
+   rather than the page's HTML.
 
-* Run `unpack-hw.py --hw <assignment name> <zipball>`
+The file must contain a JSON list of student objects with
+`id` and `short_name` fields, for example:
+
+```json
+[
+  {"id": 12345, "short_name": "Example Student"}
+]
+```
+
+The unpacker reads this file; it does not create it. It matches
+the Canvas student IDs in submission filenames to roster IDs.
+Run the commands below from the directory containing this
+file. Use the paths to the scripts if they are elsewhere.
+
+### Download and Unpack
+
+Download the assignment's submission ZIP from Canvas. Then run:
+
+```sh
+python3 unpack-hw.py --hw "Homework 1" submissions.zip
+```
+
+Replace the assignment name and ZIP filename as needed. The
+unpacker creates `staged/` and an empty `graded/` directory.
 
 ### Grading
 
 * For each directory in `staged/`:
 
-  * Edit `GRADING.txt`. Make sure to replace the `-` with a
-    score.
+  * Edit `GRADING.txt`. Replace the `-` on line 3 with an
+    integer score. Keep line 4 blank; add feedback below it.
+  * Keep the hidden `.canvas_info` file inside each student's
+    directory, alongside `GRADING.txt`. It records the Canvas
+    student and assignment IDs. Use `ls -la` to see it.
   * Move directory from `staged/` to `graded/`
 
 ### Upload
 
 * Find course ID in course URL
 * Find assignment ID in assignment URL
-* Run `upload-grades.py <courseid> <asgid>`
+* Run `python3 upload-grades.py <courseid> <asgid>`
 
 Note that the `--test` argument can be used to upload just
 one grade. This is useful to avoid spamming the list if
